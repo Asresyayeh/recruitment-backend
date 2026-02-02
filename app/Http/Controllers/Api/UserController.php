@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Symfony\Component\Mime\Email;
 
 class UserController extends Controller
 {
@@ -53,3 +54,4 @@ class UserController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 }
+
