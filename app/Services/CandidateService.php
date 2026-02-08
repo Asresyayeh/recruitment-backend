@@ -89,3 +89,4 @@ class CandidateService
         return $candidate->delete();
     }
 }
+

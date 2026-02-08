@@ -5,21 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Candidate;
 use App\Services\CandidateService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CandidateController extends Controller
 {
     protected $candidateService;
 
-    // Constructor without middleware
     public function __construct(CandidateService $candidateService)
     {
         $this->candidateService = $candidateService;
+
+        // Require authentication for all methods
+        $this->middleware('auth');
     }
 
     // Show current user's candidate profile
     public function show()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         $candidate = $this->candidateService->getByUserId($userId);
 
         if (!$candidate) {
@@ -40,16 +43,18 @@ class CandidateController extends Controller
             'education' => 'nullable|string',
         ]);
 
-        $candidate = $this->candidateService->createCandidate($request->all(), auth()->id());
+        $candidate = $this->candidateService->createCandidate($request->all(), Auth::id());
 
         return response()->json($candidate, 201);
     }
 
     // Update candidate profile
-    public function update(Request $request, Candidate $candidate)
+    public function update(Request $request, $id)
     {
-        if ($candidate->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        $candidate = Candidate::find($id);
+
+        if (!$candidate || $candidate->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized or candidate not found'], 403);
         }
 
         $request->validate([
@@ -66,10 +71,12 @@ class CandidateController extends Controller
     }
 
     // Delete candidate profile
-    public function destroy(Candidate $candidate)
+    public function destroy($id)
     {
-        if ($candidate->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        $candidate = Candidate::find($id);
+
+        if (!$candidate || $candidate->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized or candidate not found'], 403);
         }
 
         $this->candidateService->deleteCandidate($candidate);
