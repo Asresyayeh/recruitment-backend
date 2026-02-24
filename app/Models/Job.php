@@ -17,6 +17,7 @@ class Job extends Model
         'location',
         'type',
         'salary',
+        'category',
     ];
 
     // Job belongs to a company
