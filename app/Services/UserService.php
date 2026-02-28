@@ -39,7 +39,7 @@ class UserService
         // Attempt to create a token
         if (!$token = JWTAuth::attempt($credentials)) {
             return null; // login failed
-        }
+        } 
 
         // Get the user based on email
         $user = \App\Models\User::where('email', $credentials['email'])->first();
