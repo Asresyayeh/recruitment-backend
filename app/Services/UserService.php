@@ -30,9 +30,7 @@ class UserService
         ];
     }
 
-    /**
-     * Login a user
-     */
+   
 
     public function login(array $credentials)
     {

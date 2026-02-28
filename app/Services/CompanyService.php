@@ -5,65 +5,89 @@ namespace App\Services;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
+use Exception;
 
 class CompanyService
 {
-    /**
-     * Create a new company for the logged-in recruiter
-     *
-     * @param array $data
-     * @return Company
-     * @throws \Exception
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Create Company
+    |--------------------------------------------------------------------------
+    */
     public function createCompany(array $data): Company
     {
         $user = Auth::user();
 
-        // Check if recruiter already has a company
+        if (!$user) {
+            throw new Exception("Unauthenticated user.");
+        }
+
+        // Recruiter can create only one company
         if ($user->company) {
-            throw new \Exception("You already have a company assigned.");
+            throw new Exception("You already have a company.");
         }
 
-        // Handle logo upload if present
+        /*
+        |--------------------------------------------------------------------------
+        | Logo Upload
+        |--------------------------------------------------------------------------
+        */
         $logoPath = null;
-        if (isset($data['logo']) && $data['logo'] instanceof UploadedFile) {
-            $logoPath = $data['logo']->store('logos', 'public'); // storage/app/public/logos
+
+        if (!empty($data['logo']) && $data['logo'] instanceof UploadedFile) {
+            $logoPath = $data['logo']->store('logos', 'public');
         }
 
-        // Create the company
-        $company = Company::create([
+        /*
+        |--------------------------------------------------------------------------
+        | Create Company
+        |--------------------------------------------------------------------------
+        */
+        return Company::create([
             'user_id' => $user->id,
-            'name'    => $data['name'],
+            'name' => $data['name'],
             'website' => $data['website'] ?? null,
-            'address' => $data['address'],
-            'logo'    => $logoPath,
-        ]);
+            'address' => $data['address'] ?? null,
+            'logo' => $logoPath,
 
-        return $company;
+            // Verification system (startup safe defaults)
+            'company_domain' => $data['company_domain'] ?? null,
+            'is_verified' => false,
+            'verification_status' => 'pending'
+        ]);
     }
 
-    /**
-     * Get the logged-in recruiter's company
-     *
-     * @return Company|null
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Get Recruiter Company
+    |--------------------------------------------------------------------------
+    */
     public function getCompany(): ?Company
     {
-        return Auth::user()->company;
+        return Auth::user()?->company;
     }
 
-    /**
-     * Optional: Update a company's details
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Update Company
+    |--------------------------------------------------------------------------
+    */
     public function updateCompany(Company $company, array $data): Company
     {
-        // Only allow the logged-in recruiter to update their own company
-        if ($company->user_id !== Auth::id()) {
-            throw new \Exception("You cannot update this company.");
+        if (!$company) {
+            throw new Exception("Company not found.");
         }
 
-        // Handle logo upload
-        if (isset($data['logo']) && $data['logo'] instanceof UploadedFile) {
+        if ($company->user_id !== Auth::id()) {
+            throw new Exception("Unauthorized company update.");
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Logo Upload
+        |--------------------------------------------------------------------------
+        */
+        if (!empty($data['logo']) && $data['logo'] instanceof UploadedFile) {
             $data['logo'] = $data['logo']->store('logos', 'public');
         }
 
@@ -72,4 +96,3 @@ class CompanyService
         return $company;
     }
 }
-
