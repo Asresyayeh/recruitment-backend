@@ -32,6 +32,7 @@ class CompanyController extends Controller
 
         $data = $request->validate([
             'name'    => 'required|string',
+            'description' => 'required|string',
             'website' => 'nullable|string',
             'address' => 'required|string',
             'company_domain' => 'nullable|string',
@@ -51,6 +52,16 @@ class CompanyController extends Controller
         }
     }
 
+    public function verify(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|numeric'
+        ]);
+
+        return response()->json(
+            $this->companyService->verifyCompany($request->code)
+        );
+    }
     /*
     |--------------------------------------------------------------------------
     | Get Company

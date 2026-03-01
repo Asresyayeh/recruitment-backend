@@ -4,57 +4,53 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\CompanyController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CandidateController;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
+// Register + Login
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
 
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (JWT Auth)
+|--------------------------------------------------------------------------
+*/
 
+Route::middleware(['jwt.auth'])->group(function () {
 
-// ----------------------
-// User Authentication Routes
-// ----------------------
+    // User profile
+    Route::get('me', [UserController::class, 'me']);
+    Route::post('logout', [UserController::class, 'logout']);
 
-// Public routes
-Route::post('register', [UserController::class, 'register']); // Register a new user
-Route::post('login', [UserController::class, 'login']);       // Login user and get JWT token
-
-// Protected  routes (require JWT token)
-Route::middleware('auth:api')->group(function () {
-    Route::get('me', [UserController::class, 'me']);       // Get current logged-in user
-    Route::post('logout', [UserController::class, 'logout']); // Logout user (invalidate token)
-});
-
-Route::get('/jobs', [JobController::class, 'index']);
-Route::get('/jobs/{job}', [JobController::class, 'show']);
-
-Route::middleware('auth:api')->group(function () {
+    // Jobs
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{job}', [JobController::class, 'update']);
     Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
-});
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('companies', [CompanyController::class, 'store']);   // create company
-    Route::get('companies', [CompanyController::class, 'show']);    // get logged-in recruiter company
-    Route::put('companies', [CompanyController::class, 'update']);  // update company
-});
+    // Company
+    Route::post('companies', [CompanyController::class, 'store']);
+    Route::get('companies', [CompanyController::class, 'show']);
+    Route::put('companies', [CompanyController::class, 'update']);
+    Route::post('companies/verify', [CompanyController::class, 'verify']);
 
-Route::middleware('auth:api')->group(function () {
-
-    // Get current user's candidate profile
+    // Candidate
     Route::get('/candidate', [CandidateController::class, 'show']);
-
-    // Create candidate profile
     Route::post('/candidate', [CandidateController::class, 'store']);
-
-    // Update candidate profile
     Route::put('/candidate/{id}', [CandidateController::class, 'update']);
-
-    // Delete candidate profile
     Route::delete('/candidate/{id}', [CandidateController::class, 'destroy']);
 });
 
+/*
+|--------------------------------------------------------------------------
+| Health Check
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return response()->json(['message' => 'API is working']);

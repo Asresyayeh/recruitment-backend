@@ -16,14 +16,18 @@ class AuthController extends Controller
         ]);
 
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
         }
+
+        $user = JWTAuth::setToken($token)->authenticate();
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60, // ✅ fixed
-            'user' => auth('api')->user(),
+            'expires_in' => config('jwt.ttl') * 60,
+            'user' => $user
         ]);
     }
 }
