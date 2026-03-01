@@ -53,11 +53,9 @@ Route::middleware('auth:api')->group(function () {
 
     // Delete candidate profile
     Route::delete('/candidate/{id}', [CandidateController::class, 'destroy']);
-
 });
 
 
 Route::get('/', function () {
     return response()->json(['message' => 'API is working']);
 });
-

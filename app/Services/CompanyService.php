@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\Company;
+use App\Mail\VerificationMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+
 use Exception;
 
 class CompanyService
@@ -28,10 +31,10 @@ class CompanyService
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Logo Upload
-        |--------------------------------------------------------------------------
-        */
+    |-------------------------------------------------------------
+    | Logo Upload
+    |-------------------------------------------------------------
+    */
         $logoPath = null;
 
         if (!empty($data['logo']) && $data['logo'] instanceof UploadedFile) {
@@ -39,24 +42,49 @@ class CompanyService
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Create Company
-        |--------------------------------------------------------------------------
-        */
-        return Company::create([
+    |-------------------------------------------------------------
+    | Verification System ⭐
+    |-------------------------------------------------------------
+    */
+
+        $verificationCode = rand(100000, 999999);
+
+        /*
+    |-------------------------------------------------------------
+    | Create Company
+    |-------------------------------------------------------------
+    */
+
+        $company = Company::create([
             'user_id' => $user->id,
             'name' => $data['name'],
             'website' => $data['website'] ?? null,
             'address' => $data['address'] ?? null,
             'logo' => $logoPath,
 
-            // Verification system (startup safe defaults)
             'company_domain' => $data['company_domain'] ?? null,
+
+            'verification_code' => $verificationCode,
+            'verification_expiry' => now()->addMinutes(10),
+
             'is_verified' => false,
             'verification_status' => 'pending'
         ]);
-    }
 
+        /*
+    |-------------------------------------------------------------
+    | Send Verification Email ⭐
+    |-------------------------------------------------------------
+    */
+
+        if (!empty($data['email'])) {
+            Mail::to($data['email'])->send(
+                new VerificationMail($verificationCode)
+            );
+        }
+
+        return $company;
+    }
     /*
     |--------------------------------------------------------------------------
     | Get Recruiter Company
