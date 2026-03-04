@@ -66,14 +66,13 @@ class JobController extends Controller
     public function update(Request $request, Job $job)
     {
         $data = $request->validate([
-            'title' => 'string',
-            'description' => 'string',
-            'location' => 'string',
-            'type' => 'string',
-            'salary' => 'nullable|string',
-            'category' => 'string',
+            'title' => 'sometimes|string',
+            'description' => 'sometimes|string',
+            'location' => 'sometimes|string',
+            'type' => 'sometimes|string',
+            'salary' => 'sometimes|nullable|string',
+            'category' => 'sometimes|string|max:255',
         ]);
-
         return response()->json(
             $this->jobService->updateJob($job, $data)
         );
