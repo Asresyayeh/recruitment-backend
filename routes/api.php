@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\CategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,10 @@ Route::post('login', [UserController::class, 'login']);
 | Protected Routes (JWT Auth)
 |--------------------------------------------------------------------------
 */
+
+Route::get('/categories', [CategoryController::class, 'index']);
+
+Route::get('/categories/{id}/jobs', [CategoryController::class, 'jobs']);
 
 Route::middleware(['jwt.auth'])->group(function () {
 
