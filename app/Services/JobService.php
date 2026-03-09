@@ -6,9 +6,7 @@ use App\Models\Job;
 
 class JobService
 {
-    /**
-     * Get all jobs with company data (Public listing)
-     */
+
     public function getAllJobs()
     {
         return Job::with('company')
@@ -16,7 +14,7 @@ class JobService
             ->get();
     }
 
-   
+
     public function getRecruiterJobs()
     {
         $user = auth('api')->user();
@@ -31,7 +29,7 @@ class JobService
             ->get();
     }
 
-   
+
     public function getJobById(Job $job)
     {
         return $job->load('company', 'applications');
