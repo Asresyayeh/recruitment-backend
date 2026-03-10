@@ -36,7 +36,6 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('companies', [CompanyController::class, 'update']);
     Route::post('companies/verify', [CompanyController::class, 'verify']);
 
-    // Candidate
     Route::get('/candidate', [CandidateController::class, 'show']);
     Route::post('/candidate', [CandidateController::class, 'store']);
     Route::put('/candidate/{id}', [CandidateController::class, 'update']);
