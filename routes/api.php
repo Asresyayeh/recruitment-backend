@@ -25,7 +25,6 @@ Route::get('/jobs/{job}', [JobController::class, 'show']);
 
 Route::middleware(['jwt.auth'])->group(function () {
 
-    // User profile
     Route::get('me', [UserController::class, 'me']);
     Route::post('logout', [UserController::class, 'logout']);
 
