@@ -52,20 +52,15 @@ class JobController extends Controller
         );
     }
 
-    /**
-     * Show single job
-     */
+   
     public function show(Job $job)
     {
-        $user = auth('api')->user(); // null if guest
+        $user = auth('api')->user(); 
         $forRecruiter = $user && $user->role === 'recruiter';
 
         return response()->json($this->jobService->getJobById($job, $forRecruiter));
     }
 
-    /**
-     * Update job (Ownership protected)
-     */
     public function update(Request $request, Job $job)
     {
         $data = $request->validate([
