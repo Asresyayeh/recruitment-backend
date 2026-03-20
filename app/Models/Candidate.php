@@ -18,7 +18,6 @@ class Candidate extends Model
         'education',
         'profile_photo',
     ];
- // Candidate belongs to a User
     public function user()
     {
         return $this->belongsTo(User::class);
