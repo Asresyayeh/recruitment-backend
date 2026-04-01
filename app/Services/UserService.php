@@ -18,10 +18,9 @@ class UserService
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => $data['role'] ?? 'candidate', // default role
+            'role' => $data['role'] ?? 'candidate', 
         ]);
 
-        // Generate JWT token
         $token = JWTAuth::fromUser($user);
 
         return [
