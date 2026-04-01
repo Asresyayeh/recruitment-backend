@@ -8,9 +8,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserService
 {
-    /**
-     * Register a new user
-     */
+   
     public function register(array $data)
     {
         $user = User::create([
