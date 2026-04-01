@@ -34,7 +34,6 @@ class UserService
             return null; 
         }
 
-        // Get the user based on email
         $user = \App\Models\User::where('email', $credentials['email'])->first();
 
         $user = JWTAuth::user()->load('company');
