@@ -30,9 +30,8 @@ class UserService
 
     public function login(array $credentials)
     {
-        // Attempt to create a token
         if (!$token = JWTAuth::attempt($credentials)) {
-            return null; // login failed
+            return null; 
         }
 
         // Get the user based on email
