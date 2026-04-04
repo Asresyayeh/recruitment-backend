@@ -81,7 +81,6 @@ class ApplicationController extends Controller
 {
     $applications = $this->applicationService->getUserApplications();
 
-    // Map each application to include a public URL
     $applications = $applications->map(function($app) {
         $app->resume_url = $app->resume_path ? asset('storage/' . $app->resume_path) : null;
         return $app;
