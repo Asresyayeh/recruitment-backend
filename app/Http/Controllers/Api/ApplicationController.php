@@ -17,9 +17,6 @@ class ApplicationController extends Controller
         $this->applicationService = $applicationService;
     }
 
-    /**
-     * Submit a new application (User)
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -50,9 +47,6 @@ class ApplicationController extends Controller
         ]);
     }
 
-    /**
-     * Get all applications for a specific job (Recruiter only)
-     */
     public function applicationsByJob(Job $job)
     {
         $applications = $this->applicationService->getApplicationsByJob($job);
@@ -60,9 +54,6 @@ class ApplicationController extends Controller
         return response()->json($applications);
     }
 
-    /**
-     * Update application status (Recruiter only)
-     */
     public function updateStatus(Application $application, Request $request)
     {
         $data = $request->validate([

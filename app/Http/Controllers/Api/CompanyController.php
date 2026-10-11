@@ -17,11 +17,6 @@ class CompanyController extends Controller
         $this->companyService = $companyService;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Create Company
-    |--------------------------------------------------------------------------
-    */
     public function store(Request $request)
     {
         if (!Auth::check()) {
@@ -62,11 +57,7 @@ class CompanyController extends Controller
             $this->companyService->verifyCompany($request->code)
         );
     }
-    /*
-    |--------------------------------------------------------------------------
-    | Get Company
-    |--------------------------------------------------------------------------
-    */
+
     public function show()
     {
         $company = $this->companyService->getCompany();
@@ -79,12 +70,7 @@ class CompanyController extends Controller
 
         return response()->json($company);
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Update Company
-    |--------------------------------------------------------------------------
-    */
+    
     public function update(Request $request)
     {
         $company = $this->companyService->getCompany();
