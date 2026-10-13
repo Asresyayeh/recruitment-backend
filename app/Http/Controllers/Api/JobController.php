@@ -76,9 +76,7 @@ class JobController extends Controller
         );
     }
 
-    /**
-     * Delete job (Ownership protected)
-     */
+   
     public function destroy(Job $job)
     {
         $this->jobService->deleteJob($job);
