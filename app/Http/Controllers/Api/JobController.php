@@ -15,10 +15,7 @@ class JobController extends Controller
     {
         $this->jobService = $jobService;
     }
-
-    /**
-     * Public job listing
-     */
+    
     public function index()
     {
         return $this->jobService->getAllJobs();
