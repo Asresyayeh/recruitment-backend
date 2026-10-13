@@ -32,9 +32,7 @@ class JobController extends Controller
         return $this->jobService->getRecruiterJobs();
     }
 
-    /**
-     * Create job (Recruiter only)
-     */
+    
     public function store(Request $request)
     {
         $data = $request->validate([
